@@ -5,6 +5,7 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.*
+import org.gradle.internal.jvm.Jvm
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -48,7 +49,9 @@ abstract class RunServerTask : DefaultTask() {
         if (!serverJar.exists()) error("Hytale server JAR not found: ${serverJar.absolutePath}")
         if (!assetsZip.exists()) error("Assets.zip not found: ${assetsZip.absolutePath}")
 
-        val cmd = mutableListOf("java") + jvmArgs.get() + listOf(
+        val javaExecutable = Jvm.current().javaExecutable
+
+        val cmd = mutableListOf(javaExecutable.absolutePath) + jvmArgs.get() + listOf(
             "-jar", serverJar.absolutePath,
             "--assets", assetsZip.absolutePath
         )
@@ -58,7 +61,6 @@ abstract class RunServerTask : DefaultTask() {
 
         val process = ProcessBuilder(cmd)
             .directory(runDirectory)
-            .redirectInput(ProcessBuilder.Redirect.INHERIT) // allow typing into server
             .start()
 
         val outThread = pump(process.inputStream, isErr = false)
