@@ -1,5 +1,5 @@
 # Hytale Gradle Plugin
-
+<img src="https://mvn.ultradev.app/api/badge/latest/snapshots/app/ultradev/HytaleGradlePlugin?color=40c14a&name=Version" />
 
 ## Features
 - Automatically add local Hytale Server to classpath
@@ -18,10 +18,10 @@ pluginManagement {
 }
 ```
 
-Add the plugin to your `build.gradle.kts`
+Add the plugin to your `build.gradle.kts` (check the latest version in the badge below the title)
 ```kotlin
 plugins {
-    id("app.ultradev.hytalegradle") version "1.0-SNAPSHOT"
+    id("app.ultradev.hytalegradle") version "1.1.0"
 }
 
 hytale {
