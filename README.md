@@ -8,6 +8,7 @@
 - `runServer` task to install your plugin and run the server
 - Automatically run `/auth login device` to authenticate (You still need to click the link in the console)
 Recommended: Run `/auth persistence Encrypted` to avoid needing to re-authenticate every time
+- Generate decompiled sources to allow browsing server code in IDEs
 
 ## Usage
 Add the repository to `settings.gradle.kts`
@@ -27,6 +28,7 @@ plugins {
 }
 
 hytale {
-    allowOp.set(true)
+    allowOp.set(true)        // Add `--allow-op` to server args (allows you to run `/op self` in-game)
+    attachSources.set(true)  // Decompile the hytale server and attach as sources to allow browsing the code in IDEs
 }
 ```
