@@ -5,10 +5,11 @@ plugins {
 }
 
 group = "app.ultradev"
-version = "1.1.0"
+version = "1.2.0"
 
 repositories {
     mavenCentral()
+    maven("https://central.sonatype.com/repository/maven-snapshots/")
 }
 
 dependencies {

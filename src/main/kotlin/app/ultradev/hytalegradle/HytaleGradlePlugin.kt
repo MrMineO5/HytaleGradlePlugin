@@ -5,6 +5,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.jvm.tasks.Jar
 import java.io.File
+import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
@@ -15,11 +16,29 @@ class HytaleGradlePlugin : Plugin<Project> {
 
         ext.basePath.convention(project.layout.dir(project.provider { detectHytaleBaseDir().toFile() }))
         ext.allowOp.convention(false)
+        ext.attachSources.convention(false)
 
-        project.dependencies.add("compileOnly", project.files(File(
-            ext.basePath.get().asFile,
-            "Server${File.separator}HytaleServer.jar"
-        )))
+        project.afterEvaluate {
+            if (ext.attachSources.get()) {
+                val cacheDir = project.layout.buildDirectory.dir("hytale").get().asFile.toPath()
+                val localRepo = GenerateSources.generateSources(project.logger, cacheDir, ext.basePath.get().asFile.toPath())
+                project.repositories.flatDir {
+                    it.name = "hytaleGenerated"
+                    it.dir(localRepo)
+                }
+
+                project.dependencies.add("compileOnly", mapOf("name" to "HytaleServer"))
+            } else {
+                project.dependencies.add(
+                    "compileOnly", project.files(
+                        File(
+                            ext.basePath.get().asFile,
+                            "Server${File.separator}HytaleServer.jar"
+                        )
+                    )
+                )
+            }
+        }
 
         val archiveTaskName =
             if (project.tasks.names.contains("shadowJar")) "shadowJar" else "jar"
