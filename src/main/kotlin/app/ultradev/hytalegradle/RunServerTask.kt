@@ -31,7 +31,7 @@ abstract class RunServerTask : DefaultTask() {
     abstract val allowOp: Property<Boolean>
 
     init {
-        group = "run"
+        group = "hytale"
         description = "Builds plugin, installs it into run/plugins, and runs the Hytale server"
         jvmArgs.convention(listOf("-Xms4G", "-Xmx8G"))
     }

@@ -15,9 +15,6 @@ abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
     /** Adds `--allow-op` to the server arguments */
     abstract val allowOp: Property<Boolean>
 
-    /** Attaches a decompiled source jar to allow searching server code in IDEs */
-    abstract val attachSources: Property<Boolean>
-
     /** Directory to run the server in */
     abstract val runDirectory: DirectoryProperty
 }

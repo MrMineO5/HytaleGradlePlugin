@@ -6,7 +6,9 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Delete
 import org.gradle.jvm.tasks.Jar
 import java.io.File
+import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
 import kotlin.io.path.exists
 
@@ -19,30 +21,24 @@ class HytaleGradlePlugin : Plugin<Project> {
             detectHytaleBaseDir(ext.patchline.get()).toFile()
         }))
         ext.allowOp.convention(false)
-        ext.attachSources.convention(false)
         ext.runDirectory.convention(project.layout.projectDirectory.dir("run"))
 
-        project.afterEvaluate {
-            if (ext.attachSources.get()) {
-                val cacheDir = project.layout.buildDirectory.dir("hytale").get().asFile.toPath()
-                val localRepo =
-                    GenerateSources.generateSources(project.logger, cacheDir, ext.basePath.get().asFile.toPath())
-                project.repositories.flatDir {
-                    it.name = "hytaleGenerated"
-                    it.dir(localRepo)
-                }
+        val cacheDir = project.layout.buildDirectory.dir("hytale")
 
-                project.dependencies.add("compileOnly", mapOf("name" to "HytaleServer"))
-            } else {
-                project.dependencies.add(
-                    "compileOnly", project.files(
-                        File(
-                            ext.basePath.get().asFile,
-                            "Server${File.separator}HytaleServer.jar"
-                        )
-                    )
-                )
-            }
+        project.repositories.flatDir {
+            it.name = "hytaleGenerated"
+            it.dir(cacheDir)
+        }
+
+        project.dependencies.add("compileOnly", mapOf("name" to "HytaleServer"))
+
+        project.afterEvaluate {
+            val installedServer = ext.basePath.get().asFile.toPath().resolve("Server${File.separator}HytaleServer.jar")
+            val cacheDir = cacheDir.get().asFile.toPath()
+            val localCopy = cacheDir.resolve("HytaleServer.jar")
+
+            Files.createDirectories(cacheDir)
+            Files.copy(installedServer, localCopy, StandardCopyOption.REPLACE_EXISTING)
         }
 
         project.tasks.named("clean", Delete::class.java) {
@@ -62,6 +58,10 @@ class HytaleGradlePlugin : Plugin<Project> {
 
             t.basePath.set(ext.basePath)
             t.allowOp.set(ext.allowOp)
+        }
+
+        project.tasks.register("generateSources", GenerateSourcesTask::class.java) { t ->
+            t.cacheDir.set(cacheDir)
         }
     }
 
