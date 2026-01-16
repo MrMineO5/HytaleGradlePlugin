@@ -22,7 +22,7 @@ pluginManagement {
 Add the plugin to your `build.gradle.kts` (check the latest version in the badge below the title)
 ```kotlin
 plugins {
-    id("app.ultradev.hytalegradle") version "1.4.3"
+    id("app.ultradev.hytalegradle") version "1.5.0"
 }
 
 hytale {
@@ -31,6 +31,9 @@ hytale {
     
     // Set the patchline to use, currently there are "release" and "pre-release"
     patchline.set("pre-release")
+    
+    // Load mods from the local Hytale installation
+    includeLocalMods.set(true)
 }
 ```
 

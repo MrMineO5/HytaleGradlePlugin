@@ -19,11 +19,22 @@ class HytaleGradlePlugin : Plugin<Project> {
         val ext = project.extensions.create("hytale", HytaleExtension::class.java)
 
         ext.patchline.convention("release")
-        ext.basePath.convention(project.layout.dir(project.provider {
-            detectHytaleBaseDir(ext.patchline.get()).toFile()
+        ext.hytaleHome.convention(project.layout.dir(project.provider { detectHytaleHome().toFile() }))
+        ext.serverJar.convention(project.layout.file(project.provider {
+            getHytaleBasePath(
+                ext.hytaleHome.get().asFile.toPath(),
+                ext.patchline.get()
+            ).resolve("Server/HytaleServer.jar").toFile()
+        }))
+        ext.assetsZip.convention(project.layout.file(project.provider {
+            getHytaleBasePath(
+                ext.hytaleHome.get().asFile.toPath(),
+                ext.patchline.get()
+            ).resolve("Assets.zip").toFile()
         }))
         ext.allowOp.convention(false)
         ext.runDirectory.convention(project.layout.projectDirectory.dir("run"))
+        ext.includeLocalMods.convention(false)
 
         val cacheDir = project.layout.buildDirectory.dir("hytale")
 
@@ -35,7 +46,7 @@ class HytaleGradlePlugin : Plugin<Project> {
         project.dependencies.add("compileOnly", mapOf("name" to "HytaleServer"))
 
         project.afterEvaluate {
-            val installedServer = ext.basePath.get().asFile.toPath().resolve("Server${File.separator}HytaleServer.jar")
+            val installedServer = ext.serverJar.get().asFile.toPath()
             if (!Files.exists(installedServer)) return@afterEvaluate
             val cacheDir = cacheDir.get().asFile.toPath()
             val localCopy = cacheDir.resolve("HytaleServer.jar")
@@ -73,12 +84,16 @@ class HytaleGradlePlugin : Plugin<Project> {
 
             t.standardInput = System.`in`
             t.workingDir(ext.runDirectory)
-            t.classpath(ext.basePath.file("Server/HytaleServer.jar"))
+            t.classpath(ext.serverJar)
 
             val args = mutableListOf(
-                "--assets", ext.basePath.file("Assets.zip").get().asFile.absolutePath,
+                "--assets", ext.assetsZip.get().asFile.absolutePath,
                 "--assets", project.layout.projectDirectory.dir("src/main/resources").asFile.absolutePath,
             )
+
+            if (ext.includeLocalMods.get()) {
+                args += "--mods=${ext.hytaleHome.dir("UserData/Mods").get().asFile.absolutePath}"
+            }
 
             if (ext.allowOp.get()) {
                 args += "--allow-op"
@@ -92,23 +107,27 @@ class HytaleGradlePlugin : Plugin<Project> {
         }
     }
 
-    fun detectHytaleBaseDir(patchline: String): Path {
+    fun getHytaleBasePath(home: Path, patchline: String): Path {
+        return home.resolve("install/$patchline/package/game/latest")
+    }
+
+    fun detectHytaleHome(): Path {
         val basePath = if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            val basePath = Path("${System.getenv("APPDATA")}\\Hytale\\install\\$patchline\\package\\game\\latest")
+            val basePath = Path("${System.getenv("APPDATA")}\\Hytale")
             if (!basePath.exists()) {
                 error("Could not find Hytale installation.")
             }
             basePath
         } else if (Os.isFamily(Os.FAMILY_MAC)) {
             val basePath =
-                Path("${System.getProperty("user.home")}/Application Support/Hytale/install/$patchline/package/game/latest")
+                Path("${System.getProperty("user.home")}/Application Support/Hytale")
             if (!basePath.exists()) {
                 error("Could not find Hytale installation.")
             }
             basePath
         } else if (Os.isFamily(Os.FAMILY_UNIX)) {
             val basePath =
-                Path("${System.getProperty("user.home")}/.var/app/com.hypixel.HytaleLauncher/data/Hytale/install/$patchline/package/game/latest/")
+                Path("${System.getProperty("user.home")}/.var/app/com.hypixel.HytaleLauncher/data/Hytale")
             if (!basePath.exists()) {
                 error("Could not find Hytale installation.")
             }
