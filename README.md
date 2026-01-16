@@ -6,8 +6,6 @@
 ## Features
 - Automatically add local Hytale Server to classpath
 - `runServer` task to install your plugin and run the server
-- Automatically run `/auth login device` to authenticate (You still need to click the link in the console)
-Recommended: Run `/auth persistence Encrypted` to avoid needing to re-authenticate every time
 - Generate decompiled sources to allow browsing server code in IDEs
 
 ## Usage

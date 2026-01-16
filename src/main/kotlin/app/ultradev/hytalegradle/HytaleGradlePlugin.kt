@@ -36,8 +36,11 @@ class HytaleGradlePlugin : Plugin<Project> {
 
         project.afterEvaluate {
             val installedServer = ext.basePath.get().asFile.toPath().resolve("Server${File.separator}HytaleServer.jar")
+            if (!Files.exists(installedServer)) return@afterEvaluate
             val cacheDir = cacheDir.get().asFile.toPath()
             val localCopy = cacheDir.resolve("HytaleServer.jar")
+
+            if (Files.exists(localCopy) && Files.mismatch(installedServer, localCopy) == -1L) return@afterEvaluate // no need to copy
 
             Files.createDirectories(cacheDir)
             Files.copy(installedServer, localCopy, StandardCopyOption.REPLACE_EXISTING)
