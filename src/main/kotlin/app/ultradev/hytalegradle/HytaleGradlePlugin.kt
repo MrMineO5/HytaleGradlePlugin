@@ -12,6 +12,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.div
 import kotlin.io.path.exists
 
 class HytaleGradlePlugin : Plugin<Project> {
@@ -20,10 +22,14 @@ class HytaleGradlePlugin : Plugin<Project> {
 
         ext.patchline.convention("release")
         ext.basePath.convention(project.layout.dir(project.provider {
-            detectHytaleBaseDir(ext.patchline.get()).toFile()
+            detectHytaleBaseDir().toFile()
         }))
         ext.allowOp.convention(false)
         ext.runDirectory.convention(project.layout.projectDirectory.dir("run"))
+
+        val basePath = ext.basePath.get().asFile.toPath()
+        val installPath = getHytaleInstallPath(basePath, ext.patchline.get())
+        val serverJarPath = installPath / "Server" / "HytaleServer.jar"
 
         val cacheDir = project.layout.buildDirectory.dir("hytale")
 
@@ -35,15 +41,14 @@ class HytaleGradlePlugin : Plugin<Project> {
         project.dependencies.add("compileOnly", mapOf("name" to "HytaleServer"))
 
         project.afterEvaluate {
-            val installedServer = ext.basePath.get().asFile.toPath().resolve("Server${File.separator}HytaleServer.jar")
-            if (!Files.exists(installedServer)) return@afterEvaluate
+            if (!Files.exists(serverJarPath)) return@afterEvaluate
             val cacheDir = cacheDir.get().asFile.toPath()
             val localCopy = cacheDir.resolve("HytaleServer.jar")
 
-            if (Files.exists(localCopy) && Files.mismatch(installedServer, localCopy) == -1L) return@afterEvaluate // no need to copy
+            if (Files.exists(localCopy) && Files.mismatch(serverJarPath, localCopy) == -1L) return@afterEvaluate // no need to copy
 
             Files.createDirectories(cacheDir)
-            Files.copy(installedServer, localCopy, StandardCopyOption.REPLACE_EXISTING)
+            Files.copy(serverJarPath, localCopy, StandardCopyOption.REPLACE_EXISTING)
             Files.delete(cacheDir.resolve("HytaleServer-sources.jar"))
         }
 
@@ -69,10 +74,10 @@ class HytaleGradlePlugin : Plugin<Project> {
 
             t.standardInput = System.`in`
             t.workingDir(ext.runDirectory)
-            t.classpath(ext.basePath.file("Server/HytaleServer.jar"))
+            t.classpath(serverJarPath.toFile())
 
             val args = mutableListOf(
-                "--assets", ext.basePath.file("Assets.zip").get().asFile.absolutePath
+                "--assets", (installPath / "Assets.zip").absolutePathString()
             )
 
             if (ext.allowOp.get()) {
@@ -87,29 +92,23 @@ class HytaleGradlePlugin : Plugin<Project> {
         }
     }
 
-    fun detectHytaleBaseDir(patchline: String): Path {
+    fun getHytaleInstallPath(basePath: Path, patchline: String): Path {
+        return basePath / "install" / patchline / "package" / "game" / "latest"
+    }
+
+    fun detectHytaleBaseDir(): Path {
         val basePath = if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            val basePath = Path("${System.getenv("APPDATA")}\\Hytale\\install\\$patchline\\package\\game\\latest")
-            if (!basePath.exists()) {
-                error("Could not find Hytale installation.")
-            }
-            basePath
+            Path("${System.getenv("APPDATA")}\\Hytale")
         } else if (Os.isFamily(Os.FAMILY_MAC)) {
-            val basePath =
-                Path("${System.getProperty("user.home")}/Application Support/Hytale/install/$patchline/package/game/latest")
-            if (!basePath.exists()) {
-                error("Could not find Hytale installation.")
-            }
-            basePath
+            Path("${System.getProperty("user.home")}/Application Support/Hytale")
         } else if (Os.isFamily(Os.FAMILY_UNIX)) {
-            val basePath =
-                Path("${System.getProperty("user.home")}/.var/app/com.hypixel.HytaleLauncher/data/Hytale/install/$patchline/package/game/latest/")
-            if (!basePath.exists()) {
-                error("Could not find Hytale installation.")
-            }
-            basePath
+            Path("${System.getProperty("user.home")}/.var/app/com.hypixel.HytaleLauncher/data/Hytale")
         } else {
             error("Unsupported operating system")
+        }
+
+        if (!basePath.exists()) {
+            error("Could not find Hytale installation.")
         }
 
         return basePath

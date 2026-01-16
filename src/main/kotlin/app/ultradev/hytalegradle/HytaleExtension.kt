@@ -6,7 +6,7 @@ import org.gradle.api.provider.Property
 import javax.inject.Inject
 
 abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
-    /** Base directory of the Hytale "latest" install (contains Server/ and Assets.zip) */
+    /** Base directory of Hytale installation (contains install/ and UserData/) */
     abstract val basePath: DirectoryProperty
 
     /** Hytale patchline to use (overridden by basePath) */
