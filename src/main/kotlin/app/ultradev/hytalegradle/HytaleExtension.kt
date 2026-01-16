@@ -18,6 +18,10 @@ abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
     /** Set to true if you want to use the asset editor */
     abstract val includesPack: Property<Boolean>
 
+    /** Load mods from the user's mods folder. This allows you to test mods by
+     * installing them where a normal player would, instead of adding them to
+     * the server manually.*/
+    abstract val loadUserMods: Property<Boolean>
 
     /** Directory to run the server in */
     abstract val runDirectory: DirectoryProperty

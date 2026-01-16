@@ -26,6 +26,7 @@ class HytaleGradlePlugin : Plugin<Project> {
         }))
         ext.allowOp.convention(false)
         ext.includesPack.convention(true)
+        ext.loadUserMods.convention(false)
         ext.runDirectory.convention(project.layout.projectDirectory.dir("run"))
 
         val basePath = ext.basePath.get().asFile.toPath()
@@ -90,6 +91,11 @@ class HytaleGradlePlugin : Plugin<Project> {
                 val mainSourceSet = sourceSets.getByName("main")
                 val mainSourceSetPath = mainSourceSet.resources.srcDirs.first().parentFile.absolutePath
                 args += "--mods=${mainSourceSetPath}"
+            }
+
+            if (ext.loadUserMods.get()) {
+                val userModsPath = (basePath / "UserData" / "Mods").absolutePathString()
+                args += "--mods=${userModsPath}"
             }
 
             t.args(args)
