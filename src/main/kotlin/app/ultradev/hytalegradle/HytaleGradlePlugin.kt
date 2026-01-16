@@ -59,7 +59,7 @@ class HytaleGradlePlugin : Plugin<Project> {
 
             Files.createDirectories(cacheDir)
             Files.copy(installedServer, localCopy, StandardCopyOption.REPLACE_EXISTING)
-            Files.delete(cacheDir.resolve("HytaleServer-sources.jar"))
+            Files.deleteIfExists(cacheDir.resolve("HytaleServer-sources.jar"))
         }
 
         project.tasks.named("clean", Delete::class.java) {
