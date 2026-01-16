@@ -22,7 +22,7 @@ pluginManagement {
 Add the plugin to your `build.gradle.kts` (check the latest version in the badge below the title)
 ```kotlin
 plugins {
-    id("app.ultradev.hytalegradle") version "1.4.0"
+    id("app.ultradev.hytalegradle") version "1.4.3"
 }
 
 hytale {
