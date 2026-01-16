@@ -59,22 +59,22 @@ class HytaleGradlePlugin : Plugin<Project> {
         }
     }
 
-    fun detectHytaleBaseDir(pathline: String): Path {
+    fun detectHytaleBaseDir(patchline: String): Path {
         val basePath = if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            val basePath = Path("${System.getenv("APPDATA")}\\Hytale\\install\\$pathline\\package\\game\\latest")
+            val basePath = Path("${System.getenv("APPDATA")}\\Hytale\\install\\$patchline\\package\\game\\latest")
             if (!basePath.exists()) {
                 error("Could not find Hytale installation.")
             }
             basePath
         } else if (Os.isFamily(Os.FAMILY_MAC)) {
-            val basePath = Path("${System.getProperty("user.home")}/Application Support/Hytale/install/$pathline/package/game/latest")
+            val basePath = Path("${System.getProperty("user.home")}/Application Support/Hytale/install/$patchline/package/game/latest")
             if (!basePath.exists()) {
                 error("Could not find Hytale installation.")
             }
             basePath
         } else if (Os.isFamily(Os.FAMILY_UNIX)) {
             val basePath =
-                Path("${System.getProperty("user.home")}/.var/app/com.hypixel.HytaleLauncher/data/Hytale/install/$pathline/package/game/latest/")
+                Path("${System.getProperty("user.home")}/.var/app/com.hypixel.HytaleLauncher/data/Hytale/install/$patchline/package/game/latest/")
             if (!basePath.exists()) {
                 error("Could not find Hytale installation.")
             }
