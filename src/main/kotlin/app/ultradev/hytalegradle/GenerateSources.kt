@@ -45,6 +45,7 @@ object GenerateSources {
             val cmd = mutableListOf(javaExecutable.absolutePath)
             cmd.addAll(listOf(
                 "-jar", fernflower.toAbsolutePath().toString(),
+                "--only=com/hypixel",
                 "HytaleServer.jar",
                 "HytaleServer-sources.jar"
             ))
