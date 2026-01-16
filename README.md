@@ -20,8 +20,13 @@ pluginManagement {
 ```
 
 Add the plugin to your `build.gradle.kts` (check the latest version in the badge below the title)
+
+> [!WARNING]
+> If you use shadowJar to bundle dependencies make sure the hytalegradle plugin is applied **AFTER** shadowJar as in the example below
+
 ```kotlin
 plugins {
+    id("com.gradleup.shadow") version "9.3.1"
     id("app.ultradev.hytalegradle") version "1.5.0"
 }
 
