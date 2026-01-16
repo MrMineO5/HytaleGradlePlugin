@@ -15,6 +15,10 @@ abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
     /** Adds `--allow-op` to the server arguments */
     abstract val allowOp: Property<Boolean>
 
+    /** Set to true if you want to use the asset editor */
+    abstract val includesPack: Property<Boolean>
+
+
     /** Directory to run the server in */
     abstract val runDirectory: DirectoryProperty
 }

@@ -6,8 +6,8 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.JavaExec
+import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.jvm.tasks.Jar
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
@@ -25,6 +25,7 @@ class HytaleGradlePlugin : Plugin<Project> {
             detectHytaleBaseDir().toFile()
         }))
         ext.allowOp.convention(false)
+        ext.includesPack.convention(true)
         ext.runDirectory.convention(project.layout.projectDirectory.dir("run"))
 
         val basePath = ext.basePath.get().asFile.toPath()
@@ -82,6 +83,13 @@ class HytaleGradlePlugin : Plugin<Project> {
 
             if (ext.allowOp.get()) {
                 args += "--allow-op"
+            }
+
+            if (ext.includesPack.get()) {
+                val sourceSets = project.extensions.getByType(SourceSetContainer::class.java)
+                val mainSourceSet = sourceSets.getByName("main")
+                val mainSourceSetPath = mainSourceSet.resources.srcDirs.first().parentFile.absolutePath
+                args += "--mods=${mainSourceSetPath}"
             }
 
             t.args(args)
