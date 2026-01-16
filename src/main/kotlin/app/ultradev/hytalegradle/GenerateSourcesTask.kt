@@ -33,9 +33,11 @@ abstract class GenerateSourcesTask : DefaultTask() {
         val fernflowerPath = cacheDir.resolve("vineflower.jar")
 
         if (!Files.exists(fernflowerPath)) {
+            logger.lifecycle("Downloading Fernflower...")
             Files.copy(URI(fernflowerUrl).toURL().openStream(), fernflowerPath)
         }
 
+        logger.lifecycle("Decompiling Hytale...")
         val cmd = mutableListOf(javaExecutable.absolutePath)
         cmd.addAll(
             listOf(

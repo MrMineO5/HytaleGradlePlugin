@@ -3,7 +3,9 @@ package app.ultradev.hytalegradle
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Delete
+import org.gradle.api.tasks.JavaExec
 import org.gradle.jvm.tasks.Jar
 import java.io.File
 import java.nio.file.Files
@@ -50,14 +52,30 @@ class HytaleGradlePlugin : Plugin<Project> {
 
         val jarTask = project.tasks.named(archiveTaskName, Jar::class.java)
 
-        project.tasks.register("runServer", RunServerTask::class.java) { t ->
+        val installTask = project.tasks.register("installPlugin", Copy::class.java) { t ->
+            t.group = "hytale"
             t.dependsOn(jarTask)
-            t.sourceJar.set(jarTask.flatMap { it.archiveFile })
+            t.from(jarTask.flatMap { it.archiveFile })
+            t.into(ext.runDirectory.dir("mods"))
+        }
 
-            t.runDir.set(ext.runDirectory)
+        project.tasks.register("runServer", JavaExec::class.java) { t ->
+            t.group = "hytale"
+            t.dependsOn(installTask)
 
-            t.basePath.set(ext.basePath)
-            t.allowOp.set(ext.allowOp)
+            t.standardInput = System.`in`
+            t.workingDir(ext.runDirectory)
+            t.classpath(ext.basePath.file("Server/HytaleServer.jar"))
+
+            val args = mutableListOf(
+                "--assets", ext.basePath.file("Assets.zip").get().asFile.absolutePath
+            )
+
+            if (ext.allowOp.get()) {
+                args += "--allow-op"
+            }
+
+            t.args(args)
         }
 
         project.tasks.register("generateSources", GenerateSourcesTask::class.java) { t ->
