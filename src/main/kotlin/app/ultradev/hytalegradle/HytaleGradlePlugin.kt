@@ -14,7 +14,10 @@ class HytaleGradlePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val ext = project.extensions.create("hytale", HytaleExtension::class.java)
 
-        ext.basePath.convention(project.layout.dir(project.provider { detectHytaleBaseDir().toFile() }))
+        ext.patchline.convention("release")
+        ext.basePath.convention(project.layout.dir(project.provider {
+            detectHytaleBaseDir(ext.patchline.get()).toFile()
+        }))
         ext.allowOp.convention(false)
         ext.attachSources.convention(false)
 
@@ -56,22 +59,22 @@ class HytaleGradlePlugin : Plugin<Project> {
         }
     }
 
-    fun detectHytaleBaseDir(): Path {
+    fun detectHytaleBaseDir(patchline: String): Path {
         val basePath = if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            val basePath = Path("${System.getenv("APPDATA")}\\Hytale\\install\\release\\package\\game\\latest")
+            val basePath = Path("${System.getenv("APPDATA")}\\Hytale\\install\\$patchline\\package\\game\\latest")
             if (!basePath.exists()) {
                 error("Could not find Hytale installation.")
             }
             basePath
         } else if (Os.isFamily(Os.FAMILY_MAC)) {
-            val basePath = Path("${System.getProperty("user.home")}/Application Support/Hytale/install/release/package/game/latest")
+            val basePath = Path("${System.getProperty("user.home")}/Application Support/Hytale/install/$patchline/package/game/latest")
             if (!basePath.exists()) {
                 error("Could not find Hytale installation.")
             }
             basePath
         } else if (Os.isFamily(Os.FAMILY_UNIX)) {
             val basePath =
-                Path("${System.getProperty("user.home")}/.var/app/com.hypixel.HytaleLauncher/data/Hytale/install/release/package/game/latest/")
+                Path("${System.getProperty("user.home")}/.var/app/com.hypixel.HytaleLauncher/data/Hytale/install/$patchline/package/game/latest/")
             if (!basePath.exists()) {
                 error("Could not find Hytale installation.")
             }
