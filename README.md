@@ -24,11 +24,17 @@ pluginManagement {
 Add the plugin to your `build.gradle.kts` (check the latest version in the badge below the title)
 ```kotlin
 plugins {
-    id("app.ultradev.hytalegradle") version "1.3.0"
+    id("app.ultradev.hytalegradle") version "1.3.1"
 }
 
 hytale {
-    allowOp.set(true)        // Add `--allow-op` to server args (allows you to run `/op self` in-game)
-    attachSources.set(true)  // Decompile the hytale server and attach as sources to allow browsing the code in IDEs
+    // Add `--allow-op` to server args (allows you to run `/op self` in-game)
+    allowOp.set(true)
+
+    // Decompile the hytale server and attach as sources to allow browsing the code in IDEs
+    attachSources.set(true)
+    
+    // Set the patchline to use, currently there are "release" and "pre-release"
+    patchline.set("pre-release")
 }
 ```
