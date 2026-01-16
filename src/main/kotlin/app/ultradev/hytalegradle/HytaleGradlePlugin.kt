@@ -40,7 +40,11 @@ class HytaleGradlePlugin : Plugin<Project> {
             val cacheDir = cacheDir.get().asFile.toPath()
             val localCopy = cacheDir.resolve("HytaleServer.jar")
 
-            if (Files.exists(localCopy) && Files.mismatch(installedServer, localCopy) == -1L) return@afterEvaluate // no need to copy
+            if (Files.exists(localCopy) && Files.mismatch(
+                    installedServer,
+                    localCopy
+                ) == -1L
+            ) return@afterEvaluate // no need to copy
 
             Files.createDirectories(cacheDir)
             Files.copy(installedServer, localCopy, StandardCopyOption.REPLACE_EXISTING)
@@ -72,7 +76,8 @@ class HytaleGradlePlugin : Plugin<Project> {
             t.classpath(ext.basePath.file("Server/HytaleServer.jar"))
 
             val args = mutableListOf(
-                "--assets", ext.basePath.file("Assets.zip").get().asFile.absolutePath
+                "--assets", ext.basePath.file("Assets.zip").get().asFile.absolutePath,
+                "--assets", project.layout.projectDirectory.dir("src/main/resources").asFile.absolutePath,
             )
 
             if (ext.allowOp.get()) {
