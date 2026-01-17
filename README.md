@@ -27,7 +27,7 @@ Add the plugin to your `build.gradle.kts` (check the latest version in the badge
 ```kotlin
 plugins {
     id("com.gradleup.shadow") version "9.3.1"
-    id("app.ultradev.hytalegradle") version "1.5.0"
+    id("app.ultradev.hytalegradle") version "1.5.2"
 }
 
 hytale {

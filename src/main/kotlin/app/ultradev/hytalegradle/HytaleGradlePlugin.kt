@@ -84,7 +84,7 @@ class HytaleGradlePlugin : Plugin<Project> {
 
             t.standardInput = System.`in`
             t.workingDir(ext.runDirectory)
-            t.classpath(ext.serverJar)
+            t.classpath(cacheDir.get().file("HytaleServer.jar"))
 
             val args = mutableListOf(
                 "--assets", ext.assetsZip.get().asFile.absolutePath,
