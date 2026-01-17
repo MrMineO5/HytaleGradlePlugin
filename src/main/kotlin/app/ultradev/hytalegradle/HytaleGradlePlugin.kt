@@ -12,6 +12,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
+import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 
 class HytaleGradlePlugin : Plugin<Project> {
@@ -47,7 +48,15 @@ class HytaleGradlePlugin : Plugin<Project> {
 
         project.afterEvaluate {
             val installedServer = ext.serverJar.get().asFile.toPath()
-            if (!Files.exists(installedServer)) return@afterEvaluate
+            val assetsZip = ext.assetsZip.get().asFile.toPath()
+            if (!Files.exists(installedServer) || !Files.exists(assetsZip)) {
+                throw org.gradle.api.GradleException(
+                    "Missing local Hytale installation files:\n" +
+                            (if (!installedServer.exists()) " - Server jar: ${installedServer.absolutePathString()}\n" else "") +
+                            (if (!assetsZip.exists()) " - Assets zip: ${assetsZip.absolutePathString()}\n" else "") +
+                    "Make sure you have Hytale installed, or manually configure serverJar and assetsZip to the correct files"
+                )
+            }
             val cacheDir = cacheDir.get().asFile.toPath()
             val localCopy = cacheDir.resolve("HytaleServer.jar")
 

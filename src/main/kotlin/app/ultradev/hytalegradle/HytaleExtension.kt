@@ -7,7 +7,9 @@ import org.gradle.api.provider.Property
 import javax.inject.Inject
 
 abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
-    /** Hypixel installation path */
+    /**
+     * Hypixel installation path
+     */
     abstract val hytaleHome: DirectoryProperty
 
 
@@ -18,15 +20,25 @@ abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
     abstract val assetsZip: RegularFileProperty
 
 
-    /** Hytale patchline to use (overridden by basePath) */
+    /**
+     * Hytale patchline to use (overridden by basePath)
+     *
+     * Available patchlines: `release`, `pre-release`
+     */
     abstract val patchline: Property<String>
 
-    /** Adds `--allow-op` to the server arguments */
+    /**
+     * Adds `--allow-op` to the server arguments
+     *
+     * This allows players to run `/op self` to get permissions
+     */
     abstract val allowOp: Property<Boolean>
 
     /** Directory to run the server in */
     abstract val runDirectory: DirectoryProperty
 
-    /** Includes local mods in the server startup command */
+    /**
+     * Includes local mods from the `hytaleHome` directory in the server startup command
+     */
     abstract val includeLocalMods: Property<Boolean>
 }

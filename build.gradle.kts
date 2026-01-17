@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "app.ultradev"
-version = "1.5.2"
+version = "1.5.3"
 
 repositories {
     mavenCentral()
@@ -33,6 +33,12 @@ tasks.test {
 }
 kotlin {
     jvmToolchain(21)
+}
+
+java {
+    withSourcesJar()
+    // optional, but nice for Maven consumers
+    withJavadocJar()
 }
 
 publishing {
