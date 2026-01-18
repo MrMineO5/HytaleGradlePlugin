@@ -45,6 +45,20 @@ abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
     abstract val includeLocalMods: Property<Boolean>
 
 
+    /**
+     * Optionally pass a session token for automatic authentication
+     *
+     * NOTE: You need both a session token and an identity token for this to work
+     */
+    abstract val sessionToken: Property<String>
+    /**
+     * Optionally pass an identity token for automatic authentication
+     *
+     * NOTE: You need both a session token and an identity token for this to work
+     */
+    abstract val identityToken: Property<String>
+
+
     val manifest: ManifestExtension =
         objects.newInstance(ManifestExtension::class.java)
 

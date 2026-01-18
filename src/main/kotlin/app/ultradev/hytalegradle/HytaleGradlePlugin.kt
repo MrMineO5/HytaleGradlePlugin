@@ -140,6 +140,15 @@ class HytaleGradlePlugin : Plugin<Project> {
                 args += "--allow-op"
             }
 
+            if (ext.sessionToken.isPresent) {
+                args += "--session-token"
+                args += ext.sessionToken.get()
+            }
+            if (ext.identityToken.isPresent) {
+                args += "--identity-token"
+                args += ext.identityToken.get()
+            }
+
             t.args(args)
         }
 
