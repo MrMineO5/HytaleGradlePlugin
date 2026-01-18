@@ -3,6 +3,7 @@ package app.ultradev.hytalegradle.manifest
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
@@ -42,33 +43,40 @@ abstract class GenerateManifestTask @Inject constructor() : DefaultTask() {
         outFile.parentFile.mkdirs()
 
         val root = if (templateFile.exists()) {
-            JsonSlurper().parse(templateFile) as? MutableMap<String, Any>
-                ?: throw IllegalStateException("manifest.json root must be a JSON object: ${templateFile.absolutePath}")
+            try {
+                JsonSlurper().parse(templateFile) as? MutableMap<String, Any>
+                    ?: throw IllegalStateException("manifest.json root must be a JSON object: ${templateFile.absolutePath}")
+            } catch(e: Throwable) {
+                throw GradleException(
+                    "Unable to parse existing manifest: ",
+                    e
+                )
+            }
         } else mutableMapOf()
 
-        var anyChanged: Boolean = false
+        var anyChanged = false
 
         fun MutableMap<String, Any>.putIfPresent(key: String, p: Property<String>) {
             if (p.isPresent) {
-                anyChanged = this[key] != p.get()
+                anyChanged = anyChanged || this[key] != p.get()
                 this[key] = p.get()
             }
         }
         fun MutableMap<String, Any>.putIfPresent(key: String, p: Property<Boolean>) {
             if (p.isPresent) {
-                anyChanged = this[key] != p.get()
+                anyChanged = anyChanged || this[key] != p.get()
                 this[key] = p.get()
             }
         }
         fun MutableMap<String, Any>.putIfPresent(key: String, p: ListProperty<String>) {
             if (p.isPresent) {
-                anyChanged = this[key] != p.get()
+                anyChanged = anyChanged || this[key] != p.get()
                 this[key] = p.get()
             }
         }
         fun MutableMap<String, Any>.putIfPresent(key: String, p: MapProperty<String, String>) {
             if (p.isPresent) {
-                anyChanged = this[key] != p.get()
+                anyChanged = anyChanged || this[key] != p.get()
                 this[key] = p.get()
             }
         }

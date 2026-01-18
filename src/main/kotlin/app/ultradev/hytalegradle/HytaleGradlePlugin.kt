@@ -16,6 +16,7 @@ import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 import com.sun.jna.platform.win32.Advapi32Util
 import com.sun.jna.platform.win32.WinReg
+import org.gradle.api.GradleException
 
 class HytaleGradlePlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -52,7 +53,7 @@ class HytaleGradlePlugin : Plugin<Project> {
             val installedServer = ext.serverJar.get().asFile.toPath()
             val assetsZip = ext.assetsZip.get().asFile.toPath()
             if (!Files.exists(installedServer) || !Files.exists(assetsZip)) {
-                throw org.gradle.api.GradleException(
+                throw GradleException(
                     "Missing local Hytale installation files:\n" +
                             (if (!installedServer.exists()) " - Server jar: ${installedServer.absolutePathString()}\n" else "") +
                             (if (!assetsZip.exists()) " - Assets zip: ${assetsZip.absolutePathString()}\n" else "") +
