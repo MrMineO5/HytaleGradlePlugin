@@ -16,7 +16,7 @@ abstract class ManifestExtension @Inject constructor(
     abstract val version: Property<String>
     abstract val description: Property<String>
     abstract val mainClass: Property<String>
-    abstract val authors: ListProperty<String>
+    abstract val authors: ListProperty<AuthorInfo>
     abstract val website: Property<String>
     abstract val serverVersion: Property<String>
     abstract val dependencies: MapProperty<String, String>
@@ -24,4 +24,10 @@ abstract class ManifestExtension @Inject constructor(
     abstract val loadBefore: MapProperty<String, String>
     abstract val disabledByDefault: Property<Boolean>
     abstract val includesAssetPack: Property<Boolean>
+
+    data class AuthorInfo(val name: String, val email: String?, val url: String?)
+
+    fun author(name: String, email: String? = null, url: String? = null) = authors.add(
+        AuthorInfo(name, email, url)
+    )
 }

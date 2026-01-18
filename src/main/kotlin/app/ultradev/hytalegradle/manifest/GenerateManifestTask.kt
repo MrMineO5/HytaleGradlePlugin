@@ -29,7 +29,7 @@ abstract class GenerateManifestTask @Inject constructor() : DefaultTask() {
     @get:Input @get:Optional abstract val manifestVersion: Property<String>
     @get:Input @get:Optional abstract val manifestDescription: Property<String>
     @get:Input @get:Optional abstract val manifestMainClass: Property<String>
-    @get:Input @get:Optional abstract val manifestAuthors: ListProperty<String>
+    @get:Input @get:Optional abstract val manifestAuthors: ListProperty<ManifestExtension.AuthorInfo>
     @get:Input @get:Optional abstract val manifestWebsite: Property<String>
     @get:Input @get:Optional abstract val manifestServerVersion: Property<String>
     @get:Input @get:Optional abstract val manifestDependencies: MapProperty<String, String>
@@ -58,7 +58,20 @@ abstract class GenerateManifestTask @Inject constructor() : DefaultTask() {
             "Group" to "Example",
             "Name" to "ExamplePlugin",
             "Main" to "com.example.plugin.ExamplePlugin",
-            "Version" to "1.0.0"
+            "Version" to "1.0.0",
+            "Description" to "Example Hytale plugin",
+            "Authors" to listOf(mapOf(
+                "Name" to "Author",
+                "Email" to "author@example.com",
+                "Url" to "https://example.com"
+            )),
+            "Website" to "https://example.com",
+            "ServerVersion" to "*",
+            "Dependencies" to emptyMap<String, String>(),
+            "OptionalDependencies" to emptyMap<String, String>(),
+            "LoadBefore" to emptyMap<String, String>(),
+            "DisabledByDefault" to false,
+            "IncludesAssetPack" to true,
         )
 
         var anyChanged = false
@@ -75,16 +88,28 @@ abstract class GenerateManifestTask @Inject constructor() : DefaultTask() {
                 this[key] = p.get()
             }
         }
-        fun MutableMap<String, Any>.putIfPresent(key: String, p: ListProperty<String>) {
+        fun MutableMap<String, Any>.putIfPresent(key: String, p: MapProperty<String, String>) {
             if (p.isPresent) {
                 anyChanged = anyChanged || this[key] != p.get()
                 this[key] = p.get()
             }
         }
-        fun MutableMap<String, Any>.putIfPresent(key: String, p: MapProperty<String, String>) {
+        fun MutableMap<String, Any>.putIfPresent(key: String, p: ListProperty<ManifestExtension.AuthorInfo>) {
             if (p.isPresent) {
-                anyChanged = anyChanged || this[key] != p.get()
-                this[key] = p.get()
+                val jsonAuthors = p.get().map { author ->
+                    val jsonAuthor = mutableMapOf<String, Any>()
+                    jsonAuthor["Name"] = author.name
+                    if (author.email != null) {
+                        jsonAuthor["Email"] = author.email
+                    }
+                    if (author.url != null) {
+                        jsonAuthor["Website"] = author.url
+                    }
+                    jsonAuthor
+                }
+
+                anyChanged = anyChanged || this[key] != jsonAuthors
+                this[key] = jsonAuthors
             }
         }
 
