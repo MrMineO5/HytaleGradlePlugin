@@ -29,7 +29,7 @@ abstract class GenerateManifestTask @Inject constructor() : DefaultTask() {
     @get:Input @get:Optional abstract val manifestVersion: Property<String>
     @get:Input @get:Optional abstract val manifestDescription: Property<String>
     @get:Input @get:Optional abstract val manifestMainClass: Property<String>
-    @get:Input @get:Optional abstract val manifestAuthors: ListProperty<ManifestExtension.AuthorInfo>
+    @get:Input @get:Optional abstract val manifestAuthors: ListProperty<Map<String, String>>
     @get:Input @get:Optional abstract val manifestWebsite: Property<String>
     @get:Input @get:Optional abstract val manifestServerVersion: Property<String>
     @get:Input @get:Optional abstract val manifestDependencies: MapProperty<String, String>
@@ -94,22 +94,10 @@ abstract class GenerateManifestTask @Inject constructor() : DefaultTask() {
                 this[key] = p.get()
             }
         }
-        fun MutableMap<String, Any>.putIfPresent(key: String, p: ListProperty<ManifestExtension.AuthorInfo>) {
+        fun MutableMap<String, Any>.putIfPresent(key: String, p: ListProperty<Map<String, String>>) {
             if (p.isPresent) {
-                val jsonAuthors = p.get().map { author ->
-                    val jsonAuthor = mutableMapOf<String, Any>()
-                    jsonAuthor["Name"] = author.name
-                    if (author.email != null) {
-                        jsonAuthor["Email"] = author.email
-                    }
-                    if (author.url != null) {
-                        jsonAuthor["Website"] = author.url
-                    }
-                    jsonAuthor
-                }
-
-                anyChanged = anyChanged || this[key] != jsonAuthors
-                this[key] = jsonAuthors
+                anyChanged = anyChanged || this[key] != p.get()
+                this[key] = p.get()
             }
         }
 

@@ -92,7 +92,19 @@ class HytaleGradlePlugin : Plugin<Project> {
             t.manifestVersion.set(ext.manifest.version)
             t.manifestDescription.set(ext.manifest.description)
             t.manifestMainClass.set(ext.manifest.mainClass)
-            t.manifestAuthors.set(ext.manifest.authors)
+            t.manifestAuthors.set(ext.manifest.authors.map {
+                it.map { author ->
+                    val jsonAuthor = mutableMapOf<String, String>()
+                    jsonAuthor["Name"] = author.name
+                    if (author.email != null) {
+                        jsonAuthor["Email"] = author.email
+                    }
+                    if (author.url != null) {
+                        jsonAuthor["Website"] = author.url
+                    }
+                    jsonAuthor
+                }
+            })
             t.manifestWebsite.set(ext.manifest.website)
             t.manifestServerVersion.set(ext.manifest.serverVersion)
             t.manifestDependencies.set(ext.manifest.dependencies)
