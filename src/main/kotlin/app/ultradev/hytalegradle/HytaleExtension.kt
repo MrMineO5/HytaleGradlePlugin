@@ -1,5 +1,7 @@
 package app.ultradev.hytalegradle
 
+import app.ultradev.hytalegradle.manifest.ManifestExtension
+import org.gradle.api.Action
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
@@ -41,4 +43,12 @@ abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
      * Includes local mods from the `hytaleHome` directory in the server startup command
      */
     abstract val includeLocalMods: Property<Boolean>
+
+
+    val manifest: ManifestExtension =
+        objects.newInstance(ManifestExtension::class.java)
+
+    fun manifest(action: Action<ManifestExtension>) {
+        action.execute(manifest)
+    }
 }

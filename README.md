@@ -7,6 +7,7 @@
 - Automatically add local Hytale Server to classpath
 - `runServer` task to install your plugin and run the server
 - Generate decompiled sources to allow browsing server code in IDEs
+- Automatically update selected values in `manifest.json`
 
 ## Installation
 Add the repository to `settings.gradle.kts`
@@ -27,7 +28,7 @@ Add the plugin to your `build.gradle.kts` (check the latest version in the badge
 ```kotlin
 plugins {
     id("com.gradleup.shadow") version "9.3.1"
-    id("app.ultradev.hytalegradle") version "1.5.2"
+    id("app.ultradev.hytalegradle") version "1.6.0"
 }
 
 hytale {
@@ -39,6 +40,11 @@ hytale {
     
     // Load mods from the local Hytale installation
     includeLocalMods.set(true)
+
+    // Replace the version in the manifest with the project version
+    manifest {
+        version.set(project.version.toString())
+    }
 }
 ```
 
@@ -49,3 +55,5 @@ hytale {
 `./gradlew runServer` runs the Hytale server with your plugin installed.
 
 `./gradlew installPlugin` copies your plugin jar to the server's mods folder but does not start the server, useful if you want to reload your plugin without restarting the server.
+
+`./gradlew updateManifest` updates the manifest with values from the `hytale` extension, automatically runs during build

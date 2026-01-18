@@ -1,5 +1,6 @@
 package app.ultradev.hytalegradle
 
+import app.ultradev.hytalegradle.manifest.GenerateManifestTask
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -75,6 +76,35 @@ class HytaleGradlePlugin : Plugin<Project> {
         project.tasks.named("clean", Delete::class.java) {
             it.delete(ext.runDirectory)
         }
+
+        val updateManifest = project.tasks.register("updateManifest", GenerateManifestTask::class.java) { t ->
+            t.group = "hytale"
+            t.description = "Updates manifest.json if configured"
+
+            val manifestFile = project.layout.projectDirectory.file("src/main/resources/manifest.json")
+            t.templateManifest.set(manifestFile)
+            t.outputManifest.set(manifestFile)
+
+            // overlay values from extension (only applied if present)
+            t.manifestGroup.set(ext.manifest.group)
+            t.manifestName.set(ext.manifest.name)
+            t.manifestVersion.set(ext.manifest.version)
+            t.manifestDescription.set(ext.manifest.description)
+            t.manifestMainClass.set(ext.manifest.mainClass)
+            t.manifestAuthors.set(ext.manifest.authors)
+            t.manifestWebsite.set(ext.manifest.website)
+            t.manifestServerVersion.set(ext.manifest.serverVersion)
+            t.manifestDependencies.set(ext.manifest.dependencies)
+            t.manifestOptionalDependencies.set(ext.manifest.optionalDependencies)
+            t.manifestLoadBefore.set(ext.manifest.loadBefore)
+            t.manifestDisabledByDefault.set(ext.manifest.disabledByDefault)
+            t.manifestIncludesAssetPack.set(ext.manifest.includesAssetPack)
+        }
+
+        project.tasks.named("processResources") {
+            it.dependsOn(updateManifest)
+        }
+
 
         val archiveTaskName =
             if (project.tasks.names.contains("shadowJar")) "shadowJar" else "jar"
