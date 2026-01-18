@@ -7,13 +7,14 @@ import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.JavaExec
 import org.gradle.jvm.tasks.Jar
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
+import com.sun.jna.platform.win32.Advapi32Util
+import com.sun.jna.platform.win32.WinReg
 
 class HytaleGradlePlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -122,7 +123,11 @@ class HytaleGradlePlugin : Plugin<Project> {
 
     fun detectHytaleHome(): Path {
         val basePath = if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            val basePath = Path("${System.getenv("APPDATA")}\\Hytale")
+            val basePath = Path(Advapi32Util.registryGetStringValue(
+                WinReg.HKEY_LOCAL_MACHINE,
+                "SOFTWARE\\Hypixel Studios\\Hytale",
+                "GameInstallPath"
+            ))
             if (!basePath.exists()) {
                 error("Could not find Hytale installation.")
             }
