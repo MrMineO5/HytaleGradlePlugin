@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "app.ultradev"
-version = "1.5.3"
+version = "1.5.4"
 
 repositories {
     mavenCentral()
@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    implementation("net.java.dev.jna:jna-platform:5.14.0")
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
