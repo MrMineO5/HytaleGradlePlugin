@@ -83,7 +83,7 @@ class HytaleGradlePlugin : Plugin<Project> {
             t.description = "Updates manifest.json if configured"
 
             val manifestFile = project.layout.projectDirectory.file("src/main/resources/manifest.json")
-            t.templateManifest.set(manifestFile)
+            t.templateManifests.from(manifestFile)
             t.outputManifest.set(manifestFile)
 
             // overlay values from extension (only applied if present)

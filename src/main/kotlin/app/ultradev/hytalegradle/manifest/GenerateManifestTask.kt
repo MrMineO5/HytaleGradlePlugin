@@ -4,6 +4,7 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
@@ -14,9 +15,10 @@ import javax.inject.Inject
 @CacheableTask
 abstract class GenerateManifestTask @Inject constructor() : DefaultTask() {
 
-    @get:InputFile
+    @get:InputFiles
+    @get:Optional
     @get:PathSensitive(PathSensitivity.RELATIVE)
-    abstract val templateManifest: RegularFileProperty
+    abstract val templateManifests: ConfigurableFileCollection
 
     @get:OutputFile
     abstract val outputManifest: RegularFileProperty
@@ -38,7 +40,7 @@ abstract class GenerateManifestTask @Inject constructor() : DefaultTask() {
 
     @TaskAction
     fun generate() {
-        val templateFile = templateManifest.get().asFile
+        val templateFile = templateManifests.singleFile
         val outFile = outputManifest.get().asFile
         outFile.parentFile.mkdirs()
 
