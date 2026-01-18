@@ -54,7 +54,12 @@ abstract class GenerateManifestTask @Inject constructor() : DefaultTask() {
                     e
                 )
             }
-        } else mutableMapOf()
+        } else mutableMapOf<String, Any>( // Add template when generating a new manifest
+            "Group" to "Example",
+            "Name" to "ExamplePlugin",
+            "Main" to "com.example.plugin.Plugin",
+            "Version" to "1.0.0"
+        )
 
         var anyChanged = false
 
