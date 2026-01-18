@@ -57,7 +57,7 @@ abstract class GenerateManifestTask @Inject constructor() : DefaultTask() {
         } else mutableMapOf<String, Any>( // Add template when generating a new manifest
             "Group" to "Example",
             "Name" to "ExamplePlugin",
-            "Main" to "com.example.plugin.Plugin",
+            "Main" to "com.example.plugin.ExamplePlugin",
             "Version" to "1.0.0"
         )
 
@@ -93,7 +93,7 @@ abstract class GenerateManifestTask @Inject constructor() : DefaultTask() {
         root.putIfPresent("Name", manifestName)
         root.putIfPresent("Version", manifestVersion)
         root.putIfPresent("Description", manifestDescription)
-        root.putIfPresent("MainClass", manifestMainClass)
+        root.putIfPresent("Main", manifestMainClass)
         root.putIfPresent("Authors", manifestAuthors)
         root.putIfPresent("Website", manifestWebsite)
         root.putIfPresent("ServerVersion", manifestServerVersion)
