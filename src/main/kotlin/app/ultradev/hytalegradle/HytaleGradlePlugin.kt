@@ -186,7 +186,7 @@ class HytaleGradlePlugin : Plugin<Project> {
             basePath
         } else if (Os.isFamily(Os.FAMILY_MAC)) {
             val basePath =
-                Path("${System.getProperty("user.home")}/Application Support/Hytale")
+                Path("${System.getProperty("user.home")}/Library/Application Support/Hytale")
             if (!basePath.exists()) {
                 error("Could not find Hytale installation.")
             }
