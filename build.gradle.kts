@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "app.ultradev"
-version = "1.6.8"
+version = "2.0.0"
 
 repositories {
     mavenCentral()

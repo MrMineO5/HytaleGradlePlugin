@@ -10,17 +10,9 @@ import javax.inject.Inject
 
 abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
     /**
-     * Hypixel installation path
+     * If `true`, gets the Hytale installation from the local install rather than maven
      */
-    abstract val hytaleHome: DirectoryProperty
-
-
-    /** Path to HytaleServer.jar */
-    abstract val serverJar: RegularFileProperty
-
-    /** Path to Assets.zip */
-    abstract val assetsZip: RegularFileProperty
-
+    abstract val legacyMode: Property<Boolean>
 
     /**
      * Hytale patchline to use (overridden by basePath)
@@ -28,6 +20,27 @@ abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
      * Available patchlines: `release`, `pre-release`
      */
     abstract val patchline: Property<String>
+
+    /**
+     * Maven dependency version, defaults to `latest.release`
+     */
+    abstract val version: Property<String>
+
+
+    /**
+     * Hypixel installation path
+     */
+    abstract val hytaleHome: DirectoryProperty
+
+    /**
+     * Path to HytaleServer.jar
+     */
+    abstract val serverJar: RegularFileProperty
+
+    /**
+     * Path to Assets.zip
+     */
+    abstract val assetsZip: RegularFileProperty
 
     /**
      * Adds `--allow-op` to the server arguments
