@@ -3,6 +3,9 @@
   <img src="https://mvn.ultradev.app/api/badge/latest/snapshots/app/ultradev/HytaleGradlePlugin?color=40c14a&name=Version" />
 </a>
 
+> [!NOTE]
+> Currently only the `pre-release` patchline is available on maven, this will likely change in the future, but if you aren't able to resolve the dependency, switch the patchline to `pre-release`
+
 ## Features
 - Automatically add local Hytale Server to classpath
 - `runServer` task to install your plugin and run the server
@@ -28,7 +31,7 @@ Add the plugin to your `build.gradle.kts` (check the latest version in the badge
 ```kotlin
 plugins {
     id("com.gradleup.shadow") version "9.3.1"
-    id("app.ultradev.hytalegradle") version "1.6.8"
+    id("app.ultradev.hytalegradle") version "2.0.0"
 }
 
 hytale {
