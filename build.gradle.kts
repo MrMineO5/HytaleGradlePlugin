@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "2.2.20"
     `java-gradle-plugin`
     `maven-publish`
+    id("com.gradle.plugin-publish") version "2.0.0"
 }
 
 group = "app.ultradev"
@@ -21,10 +22,15 @@ dependencies {
 }
 
 gradlePlugin {
+    website.set("https://github.com/MrMineO5/HytaleGradlePlugin")
+    vcsUrl.set("https://github.com/MrMineO5/HytaleGradlePlugin")
     plugins {
         create("hytalegradle") {
             id = "app.ultradev.hytalegradle"
             implementationClass = "app.ultradev.hytalegradle.HytaleGradlePlugin"
+            displayName = "Hytale Gradle Plugin"
+            description = "Gradle plugin to simplify Hytale plugin development"
+            tags.set(listOf("hytale"))
         }
     }
 }

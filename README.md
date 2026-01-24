@@ -3,9 +3,6 @@
   <img src="https://mvn.ultradev.app/api/badge/latest/snapshots/app/ultradev/HytaleGradlePlugin?color=40c14a&name=Version" />
 </a>
 
-> [!NOTE]
-> Currently only the `pre-release` patchline is available on maven, this will likely change in the future, but if you aren't able to resolve the dependency, switch the patchline to `pre-release`
-
 ## Features
 - Automatically add local Hytale Server to classpath
 - `runServer` task to install your plugin and run the server
