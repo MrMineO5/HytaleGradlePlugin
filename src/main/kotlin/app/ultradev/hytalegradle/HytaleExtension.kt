@@ -53,6 +53,11 @@ abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
     abstract val runDirectory: DirectoryProperty
 
     /**
+     * If `true`, deletes the run directory with the `clean` task
+     */
+    abstract val cleanDeletesRunDirectory: Property<Boolean>
+
+    /**
      * Includes local mods from the `hytaleHome` directory in the server startup command
      */
     abstract val includeLocalMods: Property<Boolean>

@@ -42,6 +42,7 @@ class HytaleGradlePlugin : Plugin<Project> {
         }))
         ext.allowOp.convention(false)
         ext.runDirectory.convention(project.layout.projectDirectory.dir("run"))
+        ext.cleanDeletesRunDirectory.convention(false)
         ext.includeLocalMods.convention(false)
 
 
@@ -98,7 +99,9 @@ class HytaleGradlePlugin : Plugin<Project> {
         }
 
         project.tasks.named("clean", Delete::class.java) {
-            it.delete(ext.runDirectory)
+            if (ext.cleanDeletesRunDirectory.get()) {
+                it.delete(ext.runDirectory)
+            }
         }
 
         val updateManifest = project.tasks.register(
