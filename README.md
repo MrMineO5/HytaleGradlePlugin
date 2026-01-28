@@ -10,16 +10,6 @@
 - Automatically update selected values in `manifest.json`
 
 ## Installation
-Add the repository to `settings.gradle.kts`
-```kotlin
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        maven("https://mvn.ultradev.app/snapshots")
-    }
-}
-```
-
 Add the plugin to your `build.gradle.kts` (check the latest version in the badge below the title)
 
 > [!WARNING]
@@ -28,7 +18,7 @@ Add the plugin to your `build.gradle.kts` (check the latest version in the badge
 ```kotlin
 plugins {
     id("com.gradleup.shadow") version "9.3.1"
-    id("app.ultradev.hytalegradle") version "2.0.0"
+    id("app.ultradev.hytalegradle") version "2.0.1"
 }
 
 hytale {
