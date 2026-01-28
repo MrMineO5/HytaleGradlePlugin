@@ -49,6 +49,13 @@ abstract class HytaleExtension @Inject constructor(objects: ObjectFactory) {
      */
     abstract val allowOp: Property<Boolean>
 
+    /**
+     * Adds `--disable-sentry` to the server arguments to avoid sending plugin exceptions to Hytale
+     *
+     * It is recommended to leave this enabled!
+     */
+    abstract val disableSentry: Property<Boolean>
+
     /** Directory to run the server in */
     abstract val runDirectory: DirectoryProperty
 

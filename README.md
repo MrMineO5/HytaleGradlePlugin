@@ -18,7 +18,7 @@ Add the plugin to your `build.gradle.kts` (check the latest version in the badge
 ```kotlin
 plugins {
     id("com.gradleup.shadow") version "9.3.1"
-    id("app.ultradev.hytalegradle") version "2.0.1"
+    id("app.ultradev.hytalegradle") version "2.0.2"
 }
 
 hytale {
@@ -35,6 +35,16 @@ hytale {
     manifest {
         version.set(project.version.toString())
     }
+}
+```
+
+### Hot Reload
+Running the `runServer` task in debug mode with your IDE will usually allow you to hot reload classes.
+
+For better hot reloading, use the JetBrains Runtime (JBR) and add the following jvm argument
+```kotlin
+tasks.runServer {
+    jvmArgs = jvmArgs + "-XX:+AllowEnhancedClassRedefinition"
 }
 ```
 

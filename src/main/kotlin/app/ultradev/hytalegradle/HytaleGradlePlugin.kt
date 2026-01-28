@@ -41,6 +41,7 @@ class HytaleGradlePlugin : Plugin<Project> {
             ).resolve("Assets.zip").toFile()
         }))
         ext.allowOp.convention(false)
+        ext.disableSentry.convention(true)
         ext.runDirectory.convention(project.layout.projectDirectory.dir("run"))
         ext.cleanDeletesRunDirectory.convention(false)
         ext.includeLocalMods.convention(false)

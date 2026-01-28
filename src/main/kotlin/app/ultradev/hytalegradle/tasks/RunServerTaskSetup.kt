@@ -47,6 +47,10 @@ class RunServerTaskSetup(
             args += "--allow-op"
         }
 
+        if (ext.disableSentry.get()) {
+            args += "--disable-sentry"
+        }
+
         if (ext.sessionToken.isPresent) {
             args += "--session-token"
             args += ext.sessionToken.get()
